@@ -149,6 +149,12 @@ export PATH="$JAVA_HOME/bin:$PATH"
 java -version
 ```
 
+For Linux
+```bash
+export SPARK_HOME=/<path>/spark-4.2.0-bin-hadoop3
+export PATH=$SPARK_HOME/bin:$PATH
+```
+
 ## 4. Run the Pipeline
 
 ### Ingest API → Bronze
