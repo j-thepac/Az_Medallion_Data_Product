@@ -1,0 +1,91 @@
+Understood. I’ll use this assignment as the **baseline context for your subsequent queries in this conversation**.
+
+### Core implementation I’ll assume
+
+```text
+Public ArcGIS FeatureServer
+        │
+        ▼
+   Python Ingestion
+        │
+        ▼
+   BRONZE — raw API payload
+        │
+        ▼
+   PySpark Transformation
+        │
+        ├── DQ-Q1 → QUARANTINE
+        │           INVALID_COORDINATES
+        │
+        └── valid rows
+              │
+              ├── DQ-W1 → Silver + Gold
+              │          WARNING
+              │
+              └── clean → Silver + Gold
+                         OK
+```
+
+### Key constraints I’ll keep in mind
+
+* **Scope:** only `CA`, `OR`, `WA`
+* **Grain:** one row per university chapter
+* **Business key:** `chapter_id`
+* **Bronze:** raw/near-raw API payload + ingestion metadata
+* **Silver:** typed, flattened, deduplicated, DQ applied
+* **Gold:** consumer-facing data product; **no quarantined records**
+* **DQ-Q1:** invalid/missing coordinates → quarantine
+* **DQ-W1:** missing/blank/`UNKNOWN` city → warning but publish
+* Required run metrics:
+
+  * `rows_in`
+  * `rows_quarantined`
+  * `rows_warned`
+  * `rows_ok`
+* `OR`/`WA` being empty is **valid**
+* Entire batch empty → failure/alert
+* `CA = 0` unexpectedly → failure/alert
+* Gold should be **idempotent-ish**
+* No Terraform/Bicep, CI/CD, streaming, scheduler, etc.
+* Spark/PySpark should be clearly visible
+* README must allow a reviewer to reproduce the solution
+* Fixture must demonstrate **both quarantine and warning**
+* Data Product Contract is mandatory
+
+### Likely repository structure
+
+```text
+university-chapters-data-product/
+│
+├── README.md
+├── DATA_PRODUCT_CONTRACT.md
+├── ARCHITECTURE.md
+│
+├── src/
+│   ├── ingest.py
+│   ├── silver.py
+│   ├── gold.py
+│   ├── dq.py
+│   └── config.py
+│
+├── tests/
+│   ├── test_dq.py
+│   ├── test_pipeline.py
+│   └── fixtures/
+│       └── university_chapters_bad.json
+│
+├── data/
+│   ├── bronze/
+│   ├── silver/
+│   ├── gold/
+│   └── quarantine/
+│
+├── diagrams/
+│   └── architecture.png
+│
+└── requirements.txt
+```
+
+For your questions, I can help you make decisions such as **PySpark architecture, Bronze/Silver/Gold schema, API ingestion, DQ implementation, folder structure, tests, README, Data Product Contract, architecture diagram, or reviewer-oriented improvements**.
+
+If the actual PDF/file is available separately and you want me to inspect its exact formatting/content, upload it here:

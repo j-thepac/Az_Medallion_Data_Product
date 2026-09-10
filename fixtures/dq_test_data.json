@@ -1,0 +1,34 @@
+{
+  "features": [
+    {
+      "attributes": {
+        "ChapterID": "CA-0001",
+        "University_Chapter": "Clean University",
+        "City": "Los Angeles",
+        "State": "CA",
+        "OBJECTID": 1
+      },
+      "geometry": {"x": -118.2437, "y": 34.0522}
+    },
+    {
+      "attributes": {
+        "ChapterID": "OR-0001",
+        "University_Chapter": "Warning University",
+        "City": "UNKNOWN",
+        "State": "OR",
+        "OBJECTID": 2
+      },
+      "geometry": {"x": -122.6765, "y": 45.5231}
+    },
+    {
+      "attributes": {
+        "ChapterID": "WA-0001",
+        "University_Chapter": "Quarantine University",
+        "City": "Seattle",
+        "State": "WA",
+        "OBJECTID": 3
+      },
+      "geometry": {"x": 181.0, "y": 47.6062}
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+source:
+  url: https://services2.arcgis.com/5I7u4SJE1vUr79JC/arcgis/rest/services/UniversityChapters_Public/FeatureServer/0/query
+  states:
+    - CA
+    - OR
+    - WA
+
+query:
+  where: "State IN ('CA','OR','WA')"
+  outFields: "*"
+  returnGeometry: "true"
+  f: json
+
+paths:
+  data_root: data
+  bronze: bronze/university_chapters
+  silver: silver/university_chapters
+  gold: gold/university_chapters/v1
+  quarantine: quarantine/university_chapters
+  fixture: fixtures/dq_test_data.json

@@ -1,0 +1,10 @@
+# Local environment
+.venv/
+
+# Runtime pipeline outputs
+data/
+
+# Python cache
+__pycache__/
+.pytest_cache/
+*.py[cod]

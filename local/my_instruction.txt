@@ -1,0 +1,59 @@
+1. Use Pyspark
+2. Every time we make code changes revise README.md based on changes
+3. Use pyspark SQL for Medium and Above transfromations 
+4. Use Pyspark functions to perform simple transfromations
+5. If only 1 trnasfomration is required for entire project use SQL
+Azure medallion pipeline as per 3.1
+Gold layer as a deliberate product
+Scope — only these states CA, OR,WA
+Empty OR/WA is a source data fact, not a failed pipeline
+Keep in mind Minimum attributes to capture and publish
+Implement 2 path 
+    Implement both behaviours on the Bronze → Silver path. 
+    Live API rows may all be clean; seed at least one synthetic
+    bad row in a fixture (or inject in Bronze) so reviewers can see each path
+
+
+Also required:
+    Quarantine and Gold must be visibly different (two paths or two tables).
+    Log counts per run: rows_in, rows_quarantined, rows_warned, rows_ok.Quarantined rows must never appear in Gold.
+    Document both rules in the Data Product Contract
+
+
+Layout 
+../bronze/university_chapters/<run_id>/
+.../silver/university_chapters/
+.../gold/university_chapters/v1/
+.../quarantine/university_chapters/<run_id>/   # DQ-Q1 only
+
+Data product contract   
+    Ship a short Data Product Contract (markdown or YAML) covering:
+    1. Name & owner — product name, technical owner, consumer use cases
+    2. Interface — table / path / schema (column names, types, grain), including dq_status / dq_warnings
+    3. Freshness — intended SLA (e.g. “refreshed daily by 06:00 UTC”) even if your run is manual
+    4. Quality — DQ-Q1 / DQ-W1 plus batch rules: do not require OR/WA row counts > 0; do fail or alert if the
+whole batch is empty or CA drops to zero unexpectedly
+    5. Versioning — how breaking schema changes would be handled (e.g. v1 path / table suffix)
+    6. Classification — public source data; no PII expected; label accordingly
+
+
+Make sure :
+    No secrets in Git
+    Idempotent-ish publishes — re-running should not create unusable Gold chaos (overwrite partition or
+    MERGE by chapter_id — state your choice)
+    
+    Fail loudly — API errors and empty result sets must not silently publish empty Gold as “success” without a
+    clear policy
+    
+    Explain trade-offs briefly in the README (tooling choices, what you would add in production)
+    
+    Original work — do not paste production code from other employers’ platforms
+
+
+
+README : 
+1) Document clearly in the README how a reviewer runs your solution (commands, notebooks, or steps). Prefer
+something reproducible from a clone (fixtures + local run is acceptable if cloud setup is heavy).
+2) README should be crist , simple and concise 
+3) README can be used by AI to run setup , run and verify without human intervention 
+4)    Explain trade-offs briefly in the README (tooling choices, what you would add in production)

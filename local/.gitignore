@@ -1,0 +1,8 @@
+# Local / temporary files
+local/
+
+# Python virtual environment
+.venv/
+
+# GitHub configuration/workflows
+.github/
