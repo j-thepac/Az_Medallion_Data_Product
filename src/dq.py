@@ -33,7 +33,7 @@ def classify_quality(
         .where(F.col("record_rank") == 1)
         .drop("record_rank")
     )
-    classified.show()
+    #classified.show()
     quarantine_df = classified.where("quarantine_reason IS NOT NULL").select(
         "chapter_id",
         "chapter_name",
@@ -46,7 +46,7 @@ def classify_quality(
         "ingested_at",
         "raw_response",
     )
-    quarantine_df.show()
+    #quarantine_df.show()
     silver_df = (
         classified.where("quarantine_reason IS NULL")
         .withColumn("dq_status",F.when(F.col("warning_reason").isNull(), "OK").otherwise("WARNING"))
@@ -66,7 +66,7 @@ def classify_quality(
             "ingested_at",
         )
     )
-    silver_df.show()
+    #silver_df.show()
     metrics = {
         "rows_in": bronze_df.count(),
         "rows_quarantined": quarantine_df.count(),

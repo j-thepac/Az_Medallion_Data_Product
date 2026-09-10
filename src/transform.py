@@ -121,6 +121,8 @@ def write_gold(spark: SparkSession) -> None:
         "latitude",
         "dq_status",
         "dq_warnings",
+        "ingest_run_id",
+        "ingested_at",
     )
     gold_df.write.mode("overwrite").parquet(str(GOLD_ROOT))
 

@@ -28,6 +28,8 @@ def test_fixture_pipeline(tmp_path, monkeypatch):
             "latitude",
             "dq_status",
             "dq_warnings",
+            "ingest_run_id",
+            "ingested_at",
         }
         assert list(quarantine_root.glob("fixture-*/part-*.parquet"))
     finally:
