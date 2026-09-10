@@ -105,24 +105,27 @@ def seed_fixture() -> tuple[Path, str, datetime]:
     return run_path / "payload.json", run_id, ingested_at
 
 
-def calculate_metrics(quarantine_df, silver_df, rows_in: int) -> dict[str, int]:
-    quarantined_count = quarantine_df.count()
-    warned_count = silver_df.where(F.col("dq_status") == "WARNING").count()
-    ok_count = silver_df.where(F.col("dq_status") == "OK").count()
-    return {
-        "rows_in": rows_in,
-        "rows_quarantined": quarantined_count,
-        "rows_warned": warned_count,
-        "rows_ok": ok_count,
-    }
-
-
 def write_quarantine(quarantine_df, run_id: str) -> None:
     if quarantine_df.count():
         quarantine_df.write.mode("overwrite").parquet(str(QUARANTINE_ROOT / run_id))
 
 
-def run(use_fixture: bool = False) -> dict[str, int]:
+def write_gold(spark: SparkSession) -> None:
+    silver_output_df = spark.read.parquet(str(SILVER_ROOT))
+    gold_df = silver_output_df.select(
+        "chapter_id",
+        "chapter_name",
+        "city",
+        "state",
+        "longitude",
+        "latitude",
+        "dq_status",
+        "dq_warnings",
+    )
+    gold_df.write.mode("overwrite").parquet(str(GOLD_ROOT))
+
+
+def run(use_fixture: bool = False) -> None:
     selected_run = seed_fixture() if use_fixture else latest_bronze_run()
     response_path, run_id, ingested_at = selected_run
     spark = create_spark()
@@ -130,26 +133,11 @@ def run(use_fixture: bool = False) -> dict[str, int]:
         rows = load_features(response_path, run_id, ingested_at)
         if not rows:
             raise RuntimeError("Bronze batch is empty; Gold was not published")
-        bronze_df = spark.createDataFrame(rows, schema=TRANSFORM_SCHEMA)\
-            .withColumn("city", F.trim(F.col("city")))
-        rows_in = bronze_df.count()
+        bronze_df = spark.createDataFrame(rows, schema=TRANSFORM_SCHEMA).withColumn("city", F.trim(F.col("city")))
         quarantine_df, silver_df = classify_quality(spark, bronze_df)
-        metrics = calculate_metrics(quarantine_df, silver_df, rows_in)
         write_quarantine(quarantine_df, run_id)
         silver_df.write.mode("overwrite").parquet(str(SILVER_ROOT))
-        gold_df = silver_df.select(
-            "chapter_id",
-            "chapter_name",
-            "city",
-            "state",
-            "longitude",
-            "latitude",
-            "dq_status",
-            "dq_warnings",
-        )
-        gold_df.write.mode("overwrite").parquet(str(GOLD_ROOT))
-        print(json.dumps(metrics, sort_keys=True))
-        return metrics
+        write_gold(spark)
     finally:
         spark.stop()
 

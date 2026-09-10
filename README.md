@@ -400,7 +400,6 @@ Local PySpark and an ADLS-style folder layout were chosen to make the solution:
 - Scheduled orchestration
 - CI/CD
 - Monitoring and alerting
-- Data catalog and lineage
 - Schema evolution controls
 - Delta `MERGE` for incremental/idempotent publishing
 - Production authentication and managed identities
@@ -408,9 +407,3 @@ Local PySpark and an ADLS-style folder layout were chosen to make the solution:
 These items are intentionally outside the scope of this assignment.
 
 ---
-
-# Submission
-
-1. Push the repository to GitHub.
-2. Grant access to `dpl-tech-uk`.
-3. Share the repository URL.
